@@ -101,6 +101,11 @@ for frame = 1:options.number_of_frames
         end
         mask_name = [save_dir, name, '_', int2str(optical) ,'.pbm'];
         save_image(M, mask_name);
+        
+        cc = bwconncomp(M,8);
+        txt_name = [save_dir 'positions_', name, '_', int2str(optical),  '.txt'];
+        illumChannel  = GREEN{optical};
+        save_centroids(cc, illumChannel, txt_name); 
     end
         
   

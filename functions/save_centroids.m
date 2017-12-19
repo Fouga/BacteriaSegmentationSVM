@@ -1,4 +1,4 @@
-function save_centroids(cc,Channel, txt_name, threshold)
+function save_centroids(cc,Channel, txt_name)
 
     s = regionprops(cc,'basic');
     centroids = cat(1, s.Centroid);
@@ -9,7 +9,7 @@ function save_centroids(cc,Channel, txt_name, threshold)
     illumination = area.*statIllum/1000;
     fileID = fopen(txt_name,'w');
 
-    fprintf(fileID,'%10.1f %10.1f\n',size(centroids,1),threshold);
+    fprintf(fileID,'%10.1f\n',size(centroids,1));
     A = [centroids,area,illumination];
     fprintf(fileID,'%10.1f %10.1f %10.1f %10.1f\n',A');
     fclose(fileID);
