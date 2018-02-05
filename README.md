@@ -1,4 +1,4 @@
-<img src="https://github.com/Fouga/BacteriaSegmentationSVM/gh-pages/pipe.png" />
+<img src="https://github.com/Fouga/BacteriaSegmentationSVM/blob/gh-pages/pipe.png" />
 
 # Bacteria Segmentation using Support Vector Machine
 
