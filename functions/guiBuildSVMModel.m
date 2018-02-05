@@ -31,6 +31,7 @@ title('RGB values distribution for the chosen areas')
 xlabel ('RED')
 ylabel ('GREEN')
 zlabel ('BLUE')
+legend('object','backgr')
 pause(2);
 
 %% Fit SVM
@@ -59,4 +60,5 @@ title('Clustered RGB values distribution for the chosen areas')
 xlabel ('RED')
 ylabel ('GREEN')
 zlabel ('BLUE')
+legend('object','backgr')
 pause(3)

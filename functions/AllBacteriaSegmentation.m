@@ -1,9 +1,42 @@
 function AllBacteriaSegmentation(sourceD,model_name,varargin)
 
-% run object segmentation on the Tissue Vision data set. The segmentation
-% model is obtained using InitializeYourModel. 
-% One must pay attention to the color's folders! In this implementation red
-% is in the 2, green - 1, blue - 3.
+% Using the SVM model this function runs object segmentation on the Tissue 
+% Vision image dataset. The segmentation  model is obtained using function 
+% InitializeYourModel. 
+% 
+% 
+% Usage:          AllBacteriaSegmentation(sourceD,model_name)
+%
+% Input: sourceD  The address of a directory that points to the image data.
+%                 One must pay attention to the colors separation folders! 
+%                 In this implementation red is in the folder named '2',
+%                 green - 1, blue - 3. 
+%
+%     model_name  a name of a model that is save in a './models/'
+%                 directory.
+%       varargin  optional parameters needed for the pipeline in order to 
+%                 generalize filed of application or speciafy to show results
+%                 or not.
+%                 options.Object can be 'bacteria' or 'parasite'
+%                 options.showImage can be 0 or 1 
+%                 
+%
+% Output:         Stores segmentation results: image masks and objects' text files 
+%                 to the  [sourceD 'Segmentation_results_' model_name '/']
+%       
+% The obtained mask also needs to be filtered to get rid of outliers. The
+% filtering depends on the object of interest. This option can be changed: 
+% options.filtering = true;
+% Usualy very small objects do not belong to the correct ones. To change
+% the number of pixels inside an object one need this threshold 
+% options.NumPixThresh = 2;
+%
+% To include neighboring pixels of the detected object region growing
+% algorithm is used: options.RegionGrow = true;
+
+% See also: InitializeYourModel, SVMsegmentation
+%
+% Natalia Chicherova, 2018
 
 if nargin == 3
     options.Object =varargin{1};
@@ -18,6 +51,8 @@ end
 % parameters
 options.filtering = true;
 options.RegionGrow = true;
+% for filtering
+options.NumPixThresh = 2;
 
 % load SVM model
 load(['./models/' model_name '.mat']);
@@ -28,7 +63,7 @@ if ~exist(save_dir)
 end
 
 % read all the images' names
-source_dir = [sourceD 'stitchedImages_100/*.tif'];
+source_dir = [sourceD '*.tif'];
 [pth filter ext] = fileparts(source_dir);
 folder_source = pth; 
 pth1 = [pth '/1/'];
@@ -82,12 +117,15 @@ for frame = 1:options.number_of_frames
     disp(['Loading took ', int2str(toc), ' sec']);
     
     % segment using RGB model from SVM
+    tic;
     MASK = SVMsegmentation(RED, GREEN, BLUE, SVMModel, options);
-    
+    disp(['Segmentation took ', int2str(toc), ' sec']);
+
     % filter artifacts: this is specific to 2-photon microscopy
     if options.filtering==true
         MASK = FilterArtifacts(MASK,RED, GREEN, BLUE,options);
     end
+
     
     % include neighboring pixels 
     if options.RegionGrow == true 
@@ -101,11 +139,9 @@ for frame = 1:options.number_of_frames
         end
         mask_name = [save_dir, name, '_', int2str(optical) ,'.pbm'];
         save_image(M, mask_name);
-        
-        cc = bwconncomp(M,8);
-        txt_name = [save_dir 'positions_', name, '_', int2str(optical),  '.txt'];
-        illumChannel  = GREEN{optical};
-        save_centroids(cc, illumChannel, txt_name); 
+        txt_name = [save_dir 'positions_', name, '_', int2str(optical),  '.txt'];    
+        saveParameters(frame, optical, MASK{optical}, RED{optical},GREEN{optical},BLUE{optical},txt_name);
+ 
     end
         
   

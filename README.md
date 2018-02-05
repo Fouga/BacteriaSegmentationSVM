@@ -29,4 +29,4 @@ AllBacteriaSegmentation(sourceD,model_name);
 
 # Remarks
 
-```Matlab AllBacteriaSegmentation() ``` is made specifically for the data after tile stitching ([*StitchIt*](https://github.com/Fouga/StitchIt/) or [*StitchIt*](https://github.com/BaselLaserMouse/StitchIt)). However can be applied to any image
+```AllBacteriaSegmentation() ``` is made specifically for the data after tile stitching ([*StitchIt*](https://github.com/Fouga/StitchIt/) or [*StitchIt*](https://github.com/BaselLaserMouse/StitchIt)).
