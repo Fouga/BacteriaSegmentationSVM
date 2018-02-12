@@ -36,6 +36,7 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 
 % See also: InitializeYourModel, SVMsegmentation
 %
+% Author:
 % Natalia Chicherova, 2018
 
 if nargin == 3
@@ -86,6 +87,15 @@ for z=1:numel(d)
 end
 options.number_of_optic_sec = max(optical_section);
 options.number_of_frames = max(physical_section);
+
+%threshold for region growing in order to convert it to 8bit
+if options.RegionGrow == true 
+    TableOptions = readtable (['./models/' model_name '.txt']);
+    options.greenThresh = TableOptions.greenThresh;
+    options.blueThresh = TableOptions.blueThresh;
+    options.redThresh = TableOptions.redThresh;
+    options.IncludeRed = 0;
+end
 
 % 
 for frame = 1:options.number_of_frames

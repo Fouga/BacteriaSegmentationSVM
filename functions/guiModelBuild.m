@@ -7,7 +7,7 @@ SavedBackground = zeros(size(RED));
 SavedForegr = zeros(size(RED));
 while cont==0
     % show iamge with sprecified thresholds
-    [totalBinary_backr, totalBinary_foregr,rgbIm] =guiChooseRegions(RED, GREEN, BLUE);
+    [totalBinary_backr, totalBinary_foregr,rgbIm,options] =guiChooseRegions(RED, GREEN, BLUE);
 
     % fit svm
     SVMModel = guiBuildSVMModel(RED,GREEN,BLUE,totalBinary_backr, totalBinary_foregr, SavedBackground,SavedForegr);
@@ -32,3 +32,4 @@ end
 prompt = 'Name you model: ';
 model_name = input(prompt,'s');
 save(['./models/' model_name '.mat'],'SVMModel');
+writetable(struct2table(options),['./models/' model_name '.txt']);
