@@ -48,12 +48,12 @@ elseif nargin == 4
 else 
     options.Object = 'bacteria';
     options.showImage= 1;
+    
 end
 % parameters
-options.filtering = true;
-options.RegionGrow = true;
-% for filtering
-options.NumPixThresh = 2;
+options.filtering = false;
+options.RegionGrow = false;
+
 
 % load SVM model
 load(['./models/' model_name '.mat']);
@@ -62,7 +62,7 @@ save_dir = [sourceD 'Segmentation_results_' model_name '/'];
 if ~exist(save_dir)
     mkdir(save_dir);
 end
-
+options.saving_dir = save_dir;
 % read all the images' names
 source_dir = [sourceD '*.tif'];
 [pth filter ext] = fileparts(source_dir);
@@ -144,15 +144,17 @@ for frame = 1:options.number_of_frames
     
     for optical=1:options.number_of_optic_sec
         M = MASK{optical};
-        if options.showImage==true && optical ==1 && ( mod(frame,30)==0 || frame==1)
+        if options.showImage==true && optical ==1 && ( mod(frame,50)==0 || frame==1)
             showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical});
         end
         mask_name = [save_dir, name, '_', int2str(optical) ,'.pbm'];
         save_image(M, mask_name);
         txt_name = [save_dir 'positions_', name, '_', int2str(optical),  '.txt'];    
-        saveParameters(frame, optical, MASK{optical}, RED{optical},GREEN{optical},BLUE{optical},txt_name);
+        saveParameters(frame, optical, MASK{optical}, RED{optical},GREEN{optical},BLUE{optical},txt_name,options);
  
     end
         
   
 end
+
+putAlltxtTogeter(options)
