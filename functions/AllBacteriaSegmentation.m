@@ -53,12 +53,12 @@ end
 % parameters
 options.filtering = false;
 options.RegionGrow = false;
-
+options.Filter3D = true;
 
 % load SVM model
-load(['./models/' model_name '.mat']);
+load(model_name);
 
-save_dir = [sourceD 'Segmentation_results_' model_name '/'];
+save_dir = [sourceD 'Segmentation_results_' options.Object '/'];
 if ~exist(save_dir)
     mkdir(save_dir);
 end
@@ -90,7 +90,7 @@ options.number_of_frames = max(physical_section);
 
 %threshold for region growing in order to convert it to 8bit
 if options.RegionGrow == true 
-    TableOptions = readtable (['./models/' model_name '.txt']);
+    TableOptions = readtable ([model_name(1:end-3) 'txt']);
     options.greenThresh = TableOptions.greenThresh;
     options.blueThresh = TableOptions.blueThresh;
     options.redThresh = TableOptions.redThresh;
@@ -157,4 +157,13 @@ for frame = 1:options.number_of_frames
   
 end
 
-putAlltxtTogeter(options)
+putAlltxtTogether(options)
+
+if options.Filter3D == true
+    txt_name = [options.saving_dir 'Allpositions', '.txt'];    
+    A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
+
+    Afiltered = filterByPosition(A);
+    txt_name = [options.saving_dir 'Allpositions_filter3D', '.txt']; 
+    writetable(Afiltered,txt_name);
+end
