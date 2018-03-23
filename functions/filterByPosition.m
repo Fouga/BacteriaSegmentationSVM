@@ -1,4 +1,4 @@
-function A = filterByPosition(A)
+function A = filterByPosition(A,options)
 
 flag = zeros(1, size(A,1));
 x = A.X;
@@ -23,7 +23,54 @@ for p = 1:size(A,1)
     end
 end
 A.RedMeanInt = cherry;
+RemoveA = A(logical(flag),:); 
 A(logical(flag),:) = [];                
 
+% apply to the segmented txt and masks
+if sum(flag)>0 
+    flagDel = ones(1,size(RemoveA,1));
+    for i = 1:size(RemoveA,1)
+   
+        frame = RemoveA.Frame(i);
+      % load images
+        if frame < 10 
+          counter = strcat('00',int2str(frame)); 
+        elseif frame < 100 
+          counter = strcat('0',int2str(frame));   
+        else
+          counter = int2str(frame);   
+        end
+        name = strcat('section_', counter);
+        optical= RemoveA.Optical(i);
+        mask_name = [options.saving_dir, name, '_', int2str(optical) ,'.pbm'];
+        txt_name = [options.saving_dir 'positions_', name, '_', int2str(optical),  '.txt'];  
+
+        if flagDel(i)==1
+        
+        fprintf('Deleting objects in frame %i optical %i\nRed Intensity is not changed in the *.txt but saved in the Allpositions_filter3D.txt\n',frame, optical);
+        
+       
+        mask = imread(mask_name);
+        PositionTxt = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
+
+        cc = bwconncomp(mask,8);
+        % index in RemoveA 
+        OtherObj = find( RemoveA.Frame==frame & RemoveA.Optical==optical);
+        ObjectDelete = zeros(1,length(OtherObj));
+        for j = 1:length(OtherObj)
+            objInd = OtherObj(j);
+            % index in objects detection
+            ObjectDelete(j) = RemoveA.ObjectNum(objInd);
+            Pixs = cc.PixelIdxList{ObjectDelete(j)};
+            mask(Pixs) = 0;
+            flagDel( OtherObj(j)) = 0; 
+        end
+        save_image(mask, mask_name);
+
+
+        PositionTxt(ObjectDelete,:) = [];
+        writetable(PositionTxt,txt_name);
+        end
+    end
 end
 

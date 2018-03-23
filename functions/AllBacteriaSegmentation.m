@@ -12,8 +12,8 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 %                 In this implementation red is in the folder named '2',
 %                 green - 1, blue - 3. 
 %
-%     model_name  a name of a model that is save in a './models/'
-%                 directory.
+%     model_name  need to provide a full path and a name to the SVM model 
+%                 that is saved in a './models/' directory.
 %       varargin  optional parameters needed for the pipeline in order to 
 %                 generalize filed of application or speciafy to show results
 %                 or not.
@@ -157,13 +157,13 @@ for frame = 1:options.number_of_frames
   
 end
 
-putAlltxtTogether(options)
+putAlltxtTogether(options);
 
 if options.Filter3D == true
     txt_name = [options.saving_dir 'Allpositions', '.txt'];    
     A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
-    Afiltered = filterByPosition(A);
+    Afiltered = filterByPosition(A,options);
     txt_name = [options.saving_dir 'Allpositions_filter3D', '.txt']; 
     writetable(Afiltered,txt_name);
 end
