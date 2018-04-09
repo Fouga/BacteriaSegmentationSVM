@@ -1,4 +1,4 @@
-function saveParameters(frame, optical, M, RED, GREEN, BLUE, txt_name)
+function saveParameters(frame, optical, M, RED, GREEN, BLUE, txt_name,options)
    
     cc = bwconncomp(M,8);
     if cc.NumObjects~=0
@@ -31,8 +31,12 @@ function saveParameters(frame, optical, M, RED, GREEN, BLUE, txt_name)
         statIllumRed = [stat.MeanIntensity]';
 
         % brightness correction using neighboring intensity
-
-        [RedVal,GreenVal] = NeighborBrightnessAdjustment(cc,M, RED, GREEN);
+        if strcmp(options.Object, 'bacteria')
+            [RedVal,GreenVal] = NeighborBrightnessAdjustment(cc,M, RED, GREEN);
+        else
+            RedVal=NaN(1,cc.NumObjects);
+            GreenVal = NaN(1,cc.NumObjects);
+        end
         A = [Ob', FRAME, OPTICAL, centroids, area, GREEN_param, statIllumBl,statIllumRed,...
         RedVal',GreenVal'];
     else
