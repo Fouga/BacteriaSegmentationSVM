@@ -1,4 +1,4 @@
-function [SVMModel,model_name] = guiModelBuild(RED, GREEN, BLUE)
+function [SVMModel,Name] = guiModelBuild(RED, GREEN, BLUE)
 % This function allows to build a Support Vector Mashine model to separate
 % RGB values of the objects of interest from the background. 
 
@@ -31,5 +31,12 @@ end
 % save you model in the model folder
 prompt = 'Name you model: ';
 model_name = input(prompt,'s');
-save(['./models/' model_name '.mat'],'SVMModel');
-writetable(struct2table(options),['./models/' model_name '.txt']);
+
+mydir  = mfilename('fullpath');
+idcs   = strfind(mydir,filesep);
+newdir = mydir(1:idcs(end-1)-1); 
+Name = [newdir '/models/' model_name];
+disp(['saving model: ' Name]);
+save([Name '.mat'],'SVMModel');
+writetable(struct2table(options),[Name '.txt']);
+
