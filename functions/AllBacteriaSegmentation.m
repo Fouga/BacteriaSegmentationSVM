@@ -48,8 +48,8 @@ elseif nargin == 4
 else 
     options.Object = 'bacteria';
     options.showImage= 1;
-    
 end
+
 % parameters
 options.filtering = false;
 options.RegionGrow = false;
@@ -90,7 +90,7 @@ options.number_of_frames = max(physical_section);
 
 %threshold for region growing in order to convert it to 8bit
 if options.RegionGrow == true 
-    TableOptions = readtable ([model_name(1:end-3) 'txt']);
+    TableOptions = readtable ([model_name '.txt']);
     options.greenThresh = TableOptions.greenThresh;
     options.blueThresh = TableOptions.blueThresh;
     options.redThresh = TableOptions.redThresh;
@@ -145,7 +145,7 @@ for frame = 1:options.number_of_frames
     for optical=1:options.number_of_optic_sec
         M = MASK{optical};
         if options.showImage==true && optical ==1 && ( mod(frame,50)==0 || frame==1)
-            showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical});
+            showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical},model_name);
         end
         mask_name = [save_dir, name, '_', int2str(optical) ,'.pbm'];
         save_image(M, mask_name);

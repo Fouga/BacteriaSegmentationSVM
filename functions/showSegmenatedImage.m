@@ -1,9 +1,18 @@
-function showSegmenatedImage(M, red, green, blue)
+function showSegmenatedImage(M, red, green, blue,varargin)
 
-% read txt from model
-thresh1 = 2000;
-thresh2 = 1600;
-thresh3 = 800;
+if nargin == 4
+    
+    thresh1 = 2000;
+    thresh2 = 1600;
+    thresh3 = 800;
+elseif nargin == 5
+    % read txt from model
+    model_name = varargin{1};
+    TableOptions = readtable ([model_name '.txt']);
+    thresh1 = TableOptions.redThresh;
+    thresh2 = TableOptions.greenThresh;
+    thresh3 = TableOptions.blueThresh;
+end
 
 
 l = red;
@@ -20,16 +29,18 @@ rgbIm = cat(3, im1_8,im2_8,im3_8);
 cc = bwconncomp(M,8);
 s = regionprops(cc,'basic');
 centroids = cat(1, s.Centroid);
-figure,imshow(rgbIm)
-hold on
 if cc.NumObjects~=0
-    plot(centroids(:,1),centroids(:,2), 'b*')
+    figure,imshow(rgbIm)
+    hold on
+        plot(centroids(:,1),centroids(:,2), 'b*')
+    hold off
+    title('The image with segmented objects')
+    pause(3);
+else
+    disp('no objects found')
 end
-hold off
-title('The image with segmented objects')
-pause(3);
 %%
-bw4_perim = bwperim(M);
-overlay = imoverlay(rgbIm, bw4_perim);
-figure, imshow(overlay), title('Overlay with object borders.')
+% bw4_perim = bwperim(M);
+% overlay = imoverlay(rgbIm, bw4_perim);
+% figure, imshow(overlay), title('Overlay with object borders.')
 
