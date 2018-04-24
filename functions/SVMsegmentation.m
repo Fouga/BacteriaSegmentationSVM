@@ -12,14 +12,6 @@ for optical = 1:options.number_of_optic_sec
         Mask = zeros(size(red));
         Mask(CPRE{optical}==20) =1;
         
-        % remove small objects
-        cc = bwconncomp(Mask,8);
-        numPixels = cellfun(@numel,cc.PixelIdxList);
-        idX = find(numPixels<5);
-        for i=1:length(idX)
-            Mask(cc.PixelIdxList{idX(i)}) = 0;
-        end
-        
         MASK{optical} = Mask;
 end
  
@@ -29,18 +21,28 @@ end
 
 function  CPRE = ApplySVMModel(RED, GREEN, BLUE, SVMModel, options)
 
+if options.OptBrightCorrection
+    CorrectionTable = readtable(fullfile(options.folder_destination, 'BrightnessCorrection.txt'));
+    ratioGreen = CorrectionTable.ratio( CorrectionTable.Channel==options.green);
+    ratioRed = CorrectionTable.ratio( CorrectionTable.Channel==options.red);
+    ratioBlue = CorrectionTable.ratio( CorrectionTable.Channel==options.blue);
+else
+    ratioGreen = ones(options.number_of_optic_sec,1);
+    ratioRed = ones(options.number_of_optic_sec,1);
+    ratioBlue = ones(options.number_of_optic_sec,1);
+end
 
 test = cell(1,options.number_of_optic_sec);
-for optical = 1:options.number_of_optic_sec
-    gr = GREEN{optical};
-    red = RED{optical};
-    bl = BLUE{optical};
+parfor optical = 1:options.number_of_optic_sec
+    gr = GREEN{optical}.*ratioGreen(optical);
+    red = RED{optical}.*ratioRed(optical);
+    bl = BLUE{optical}.*ratioBlue(optical);
     test{optical}= [red(:), gr(:), bl(:)];
 end
 
 CPRE = cell(1,options.number_of_optic_sec);
 for optical = 1:options.number_of_optic_sec 
-    fprintf('Predicting model %i\n',optical);
+    fprintf('Predicting model %i...\n',optical);
     cpre = predict(SVMModel,double(test{optical}));
     CPRE{optical} = cpre;
 end

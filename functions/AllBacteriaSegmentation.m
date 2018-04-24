@@ -39,36 +39,38 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 % Author:
 % Natalia Chicherova, 2018
 
-if nargin == 3
-    options.Object =varargin{1};
-    options.showImage = 0;    
-elseif nargin == 4
-    options.Object =varargin{1};
-    options.showImage = varargin{2};
-else 
-    options.Object = 'bacteria';
-    options.showImage= 1;
+options = Segmentation_parseInputs(varargin);
+if strcmp(options.Object,'neutrophil')==1 && options.NumPixThresh <20
+    options.NumPixThresh = 20;
 end
-
-% parameters
-options.filtering = false;
-options.RegionGrow = false;
-options.Filter3D = true;
-
 % load SVM model
-load(model_name);
+options.model_name = model_name;  
+options.folder_source = sourceD;
 
-save_dir = [sourceD 'Segmentation_results_' options.Object '/'];
-if ~exist(save_dir)
-    mkdir(save_dir);
+load(model_name);
+if isempty(options.folder_destination)
+    save_dir=fullfile(sourceD, ['Segmentation_results_' options.Object]);
+    if ~exist(save_dir)
+        mkdir(save_dir);
+    end
+    options.folder_destination = save_dir;
 end
-options.saving_dir = save_dir;
+disp(options);
+
+if options.OptBrightCorrection == 1
+   CorrectionTable = correctOpticalBrightness(sourceD,options.folder_destination);
+end
+
 % read all the images' names
-source_dir = [sourceD '*.tif'];
-[pth filter ext] = fileparts(source_dir);
-folder_source = pth; 
-pth1 = [pth '/1/'];
-d = dir([pth1 filter ext]);
+% source_dir = [sourceD '*.tif'];
+% [pth filter ext] = fileparts(source_dir);
+% folder_source = pth; 
+% pth1 = [pth '/1/'];
+ext = '.tif';
+redf = num2str(options.red);
+greenf = num2str(options.green);
+bluef = num2str(options.blue);
+d = dir([fullfile(sourceD,redf,'*') ext]);
 
 % save all filenames in options
 options.ALLfilenames = cell(numel(d),1);
@@ -78,6 +80,7 @@ end
 
 % get the number of physical and optical section independent of Mosaic.txt
 % from the names of the images
+% make it when no mosaIC!!!!!
 optical_section = []; physical_section = [];
 for z=1:numel(d)
     FileName = options.ALLfilenames{z};
@@ -97,7 +100,8 @@ if options.RegionGrow == true
     options.IncludeRed = 0;
 end
 
-% 
+
+
 for frame = 1:options.number_of_frames
   % load images
     if frame < 10 
@@ -117,11 +121,11 @@ for frame = 1:options.number_of_frames
     tic;
     parfor optical = 1:options.number_of_optic_sec
         display(['Loading ', name, '_0',  int2str(optical), ext]);
-        green = imread([folder_source '/1/', name, '_0',  int2str(optical), ext]);
+        green = imread(fullfile(sourceD, greenf ,[ name, '_0',  int2str(optical), ext]));
         GREEN{optical} = green;
-        red = imread([folder_source '/2/', name, '_0',  int2str(optical), ext]);
+        red = imread(fullfile(sourceD, redf, [name, '_0',  int2str(optical), ext]));
         RED{optical} = red;
-        blue = imread([folder_source '/3/', name, '_0',  int2str(optical), ext]);
+        blue = imread(fullfile(sourceD, bluef, [name, '_0',  int2str(optical), ext]));
         BLUE{optical} = blue;
     end
     disp(['Loading took ', int2str(toc), ' sec']);

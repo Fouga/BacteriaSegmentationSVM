@@ -1,5 +1,9 @@
 function MASK = FilterArtifacts(MASK,RED, GREEN, BLUE,options)
 
+% filter very bright pixels and remove small objects. Very bright pixels 
+% are the pixels that have values > 6000. The size of the
+% objects is specified by options.NumPixThresh
+
 thrBright = 6000;
 for optical=1:options.number_of_optic_sec
     M = MASK{optical};
@@ -10,7 +14,7 @@ for optical=1:options.number_of_optic_sec
     switch options.Object
         case 'bacteria'
             % for filtering
-            options.NumPixThresh = 2;
+%             options.NumPixThresh = 2;
             % remove very bright pixels
             M(red>thrBright & green>thrBright & blue>thrBright)=0;
 
@@ -26,8 +30,7 @@ for optical=1:options.number_of_optic_sec
 
             MASK{optical} = M;
         case 'neutrophil'
-            options.NumPixThresh = 20;
-            % remove very bright pixels
+              % remove very bright pixels
             M(red>thrBright & green>thrBright & blue>thrBright)=0;
             cc = bwconncomp(M,8);
             numPixels = cellfun(@numel,cc.PixelIdxList);
