@@ -151,9 +151,9 @@ for frame = 1:options.number_of_frames
         if options.showImage==true && optical ==1 && ( mod(frame,50)==0 || frame==1)
             showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical},model_name);
         end
-        mask_name = [save_dir, name, '_', int2str(optical) ,'.pbm'];
+        mask_name = fullfile(options.folder_destination,[ name, '_', int2str(optical) ,'.pbm']);
         save_image(M, mask_name);
-        txt_name = [save_dir 'positions_', name, '_', int2str(optical),  '.txt'];    
+        txt_name = fullfile(options.folder_destination,['positions_', name, '_', int2str(optical),  '.txt']);    
         saveParameters(frame, optical, MASK{optical}, RED{optical},GREEN{optical},BLUE{optical},txt_name,options);
  
     end
@@ -164,10 +164,10 @@ end
 putAlltxtTogether(options);
 
 if options.Filter3D == true
-    txt_name = [options.saving_dir 'Allpositions', '.txt'];    
+    txt_name = fullfile(options.saving_dir, ['Allpositions', '.txt']);    
     A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
     Afiltered = filterByPosition(A,options);
-    txt_name = [options.saving_dir 'Allpositions_filter3D', '.txt']; 
+    txt_name = fullfile(options.folder_destination,['Allpositions_filter3D', '.txt']); 
     writetable(Afiltered,txt_name);
 end

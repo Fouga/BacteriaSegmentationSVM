@@ -1,4 +1,4 @@
-function showSegmenatedImage(M, red, green, blue,varargin)
+function showSegmenatedImage(M, red, green, blue,options,varargin)
 
 if nargin == 4
     
@@ -40,7 +40,10 @@ else
     disp('no objects found')
 end
 %%
-% bw4_perim = bwperim(M);
-% overlay = imoverlay(rgbIm, bw4_perim);
-% figure, imshow(overlay), title('Overlay with object borders.')
+if strcmp(options.Object,'neutrophil') 
+bw4_perim = bwperim(M);
+overlay = imoverlay(rgbIm, bw4_perim);
+figure, imshow(overlay), title('Overlay with object borders.')
+pause(3)
+end
 
