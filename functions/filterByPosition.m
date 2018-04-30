@@ -4,7 +4,7 @@ flag = zeros(1, size(A,1));
 x = A.X;
 y = A.Y;
 z = A.Z;
-cherry = A.RedMeanInt;
+cherry = A.GreenMeanInten;
 for p = 1:size(A,1)
     for q = 1:size(A,1)
         if p ~= q && flag(q) ~= 1 && flag(p) ~= 1
@@ -22,7 +22,7 @@ for p = 1:size(A,1)
         end
     end
 end
-A.RedMeanInt = cherry;
+A.GreenMeanInten = cherry;
 RemoveA = A(logical(flag),:); 
 A(logical(flag),:) = [];                
 
@@ -42,12 +42,12 @@ if sum(flag)>0
         end
         name = strcat('section_', counter);
         optical= RemoveA.Optical(i);
-        mask_name = [options.saving_dir, name, '_', int2str(optical) ,'.pbm'];
-        txt_name = [options.saving_dir 'positions_', name, '_', int2str(optical),  '.txt'];  
+        mask_name = fullfile(options.folder_destination, [name, '_', int2str(optical) ,'.pbm']);
+        txt_name = fullfile(options.folder_destination, ['positions_', name, '_', int2str(optical),  '.txt']);  
 
         if flagDel(i)==1
         
-        fprintf('Deleting objects in frame %i optical %i\nRed Intensity is not changed in the *.txt but saved in the Allpositions_filter3D.txt\n',frame, optical);
+        fprintf('Deleting objects in frame %i optical %i\nGreen Intensity is not changed in the position_*.txt BUT saved in the Allpositions_filter3D.txt\n',frame, optical);
         
        
         mask = imread(mask_name);

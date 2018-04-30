@@ -149,7 +149,7 @@ for frame = 1:options.number_of_frames
     for optical=1:options.number_of_optic_sec
         M = MASK{optical};
         if options.showImage==true && optical ==1 && ( mod(frame,50)==0 || frame==1)
-            showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical},model_name);
+            showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical},options,model_name);
         end
         mask_name = fullfile(options.folder_destination,[ name, '_', int2str(optical) ,'.pbm']);
         save_image(M, mask_name);
@@ -164,7 +164,7 @@ end
 putAlltxtTogether(options);
 
 if options.Filter3D == true
-    txt_name = fullfile(options.saving_dir, ['Allpositions', '.txt']);    
+    txt_name = fullfile(options.folder_destination, ['Allpositions', '.txt']);    
     A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
     Afiltered = filterByPosition(A,options);
