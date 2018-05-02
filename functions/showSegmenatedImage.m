@@ -1,17 +1,25 @@
-function showSegmenatedImage(M, red, green, blue,options,varargin)
+function showSegmenatedImage(M, red, green, blue,varargin)
 
-if nargin == 4
+if nargin == 5
     
     thresh1 = 2000;
     thresh2 = 1600;
     thresh3 = 800;
-elseif nargin == 5
+elseif nargin == 6
     % read txt from model
-    model_name = varargin{1};
-    TableOptions = readtable ([model_name '.txt']);
-    thresh1 = TableOptions.redThresh;
-    thresh2 = TableOptions.greenThresh;
-    thresh3 = TableOptions.blueThresh;
+    options = varargin{1};
+  
+    if ~exist(fullfile([options.model_name '.txt']),'file')
+        thresh1 = 2000;
+        thresh2 = 1600;
+        thresh3 = 800;
+    else
+        % read txt from model
+        TableOptions = readtable (fullfile([options.model_name '.txt']));
+        thresh1 = TableOptions.redThresh;
+        thresh2 = TableOptions.greenThresh;
+        thresh3 = TableOptions.blueThresh;
+    end
 end
 
 
@@ -41,9 +49,9 @@ else
 end
 %%
 if strcmp(options.Object,'neutrophil') 
-bw4_perim = bwperim(M);
-overlay = imoverlay(rgbIm, bw4_perim);
-figure, imshow(overlay), title('Overlay with object borders.')
-pause(3)
+    bw4_perim = bwperim(M);
+    overlay = imoverlay(rgbIm, bw4_perim);
+    figure, imshow(overlay), title('Overlay with object borders.')
+    pause(3)
 end
 
