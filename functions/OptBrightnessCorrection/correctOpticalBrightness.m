@@ -17,7 +17,7 @@ if ~exist(fullfile(save_dir, 'BrightnessCorrection.txt'))
         CorrectionTableChan = table(OptSec,ratio,Channel);
         options.Opticalmethod = 'average';
         for optS =2:param.layers
-            source = [source_dir sprintf('%i/',chan) sprintf('*_0%i.tif',optS)];
+            source = fullfile(source_dir, sprintf('%i',chan), sprintf('*_0%i.tif',optS));
             Model_change = getCorrectionModel(source, save_dir,optS,chan);
             ratio = correctImages(Model_needed, Model_change);
             OptSec = optS;

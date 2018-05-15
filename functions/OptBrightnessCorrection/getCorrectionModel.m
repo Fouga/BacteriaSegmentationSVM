@@ -1,20 +1,20 @@
 function     [ModelC,options] = getCorrectionModel(source, save_dir,optS,chan)
 
-CorrectModel_name = [save_dir sprintf('Model_opticalSection%i_chan%i.mat',optS,chan)];
+CorrectModel_name = fullfile(save_dir, sprintf('Model_opticalSection%i_chan%i.mat',optS,chan));
 
 [pth filter ext] = fileparts(source);
-pth2 = [pth '/**/'];
+pth2 = fullfile(pth, '**');
 
 % store the source path in the options structure
 options.folder_source = pth2;  
 options.source = source; 
 % read all the files in d
-d = dir([options.folder_source filter ext]);
+d = dir(fullfile(options.folder_source,[ filter ext]));
 % create a new field for all file names of the channel in options.
 options.ALLfilenames = cell(numel(d),1);
 
 for i = 1:numel(d)
-    options.ALLfilenames{i} = [pth '/' d(i).name];
+    options.ALLfilenames{i} = fullfile(pth, d(i).name);
 end
 % store the number of source images into the options structure
 options.ALLnum_images_provided = numel(options.ALLfilenames);

@@ -54,6 +54,10 @@ if isempty(options.folder_destination)
         mkdir(save_dir);
     end
     options.folder_destination = save_dir;
+    if ~exist(fullfile(save_dir,'SegmenatationPerSlice'))
+        mkdir(fullfile(save_dir,'SegmenatationPerSlice'));
+    end
+    options.folder_destination_perSlice = fullfile(save_dir,'SegmenatationPerSlice');
 end
 disp(options);
 
@@ -151,9 +155,9 @@ for frame = 1:options.number_of_frames
         if options.showImage==true && optical ==1 && ( mod(frame,50)==0 || frame==1)
             showSegmenatedImage(M, RED{optical}, GREEN{optical}, BLUE{optical},options,model_name);
         end
-        mask_name = fullfile(options.folder_destination,[ name, '_', int2str(optical) ,'.pbm']);
+        mask_name = fullfile(options.folder_destination_perSlice,[ name, '_', int2str(optical) ,'.pbm']);
         save_image(M, mask_name);
-        txt_name = fullfile(options.folder_destination,['positions_', name, '_', int2str(optical),  '.txt']);    
+        txt_name = fullfile(options.folder_destination_perSlice,['positions_', name, '_', int2str(optical),  '.txt']);    
         saveParameters(frame, optical, MASK{optical}, RED{optical},GREEN{optical},BLUE{optical},txt_name,options);
  
     end

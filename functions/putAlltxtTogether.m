@@ -12,7 +12,7 @@ for frame = 1:options.number_of_frames
     end
     name = strcat('section_', counter);
     for optical=1:options.number_of_optic_sec
-        txt_name = fullfile(options.folder_destination, ['positions_', name, '_', int2str(optical),  '.txt']);    
+        txt_name = fullfile(options.folder_destination_perSlice, ['positions_', name, '_', int2str(optical),  '.txt']);    
         A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
         if ~isempty(A)

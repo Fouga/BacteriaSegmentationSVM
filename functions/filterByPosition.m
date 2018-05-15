@@ -28,6 +28,11 @@ A(logical(flag),:) = [];
 
 % apply to the segmented txt and masks
 if sum(flag)>0 
+    if ~exist(fullfile(options.folder_destination,'FilteredSegmenatationPerSlice'))
+%         mkdir(fullfile(options.folder_destination,'FilteredSegmenatationPerSlice'));
+        options.folder_destination_FilteredperSlice = fullfile(options.folder_destination,'FilteredSegmenatationPerSlice');
+        copyfile(options.folder_destination_perSlice, options.folder_destination_FilteredperSlice)
+    end
     flagDel = ones(1,size(RemoveA,1));
     for i = 1:size(RemoveA,1)
    
@@ -42,8 +47,8 @@ if sum(flag)>0
         end
         name = strcat('section_', counter);
         optical= RemoveA.Optical(i);
-        mask_name = fullfile(options.folder_destination, [name, '_', int2str(optical) ,'.pbm']);
-        txt_name = fullfile(options.folder_destination, ['positions_', name, '_', int2str(optical),  '.txt']);  
+        mask_name = fullfile(options.folder_destination_FilteredperSlice, [name, '_', int2str(optical) ,'.pbm']);
+        txt_name = fullfile(options.folder_destination_FilteredperSlice, ['positions_', name, '_', int2str(optical),  '.txt']);  
 
         if flagDel(i)==1
         
