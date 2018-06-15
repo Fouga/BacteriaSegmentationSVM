@@ -1,18 +1,18 @@
 function putAlltxtTogether(options)
 
 B = [];cnt = 1;
-for frame = 1:options.number_of_frames
+for i = 1:options.number_of_frames*options.number_of_optic_sec
   % load images
-    if frame < 10 
-      counter = strcat('00',int2str(frame)); 
-    elseif frame < 100 
-      counter = strcat('0',int2str(frame));   
-    else
-      counter = int2str(frame);   
-    end
-    name = strcat('section_', counter);
-    for optical=1:options.number_of_optic_sec
-        txt_name = fullfile(options.folder_destination_perSlice, ['positions_', name, '_', int2str(optical),  '.txt']);    
+%     if frame < 10 
+%       counter = strcat('00',int2str(frame)); 
+%     elseif frame < 100 
+%       counter = strcat('0',int2str(frame));   
+%     else
+%       counter = int2str(frame);   
+%     end
+%     name = strcat('section_', counter);
+%     for optical=1:options.number_of_optic_sec
+        txt_name = fullfile(options.folder_destination_perSlice, ['positions_', options.ALLfilenames{i},  '.txt']);    
         A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
         if ~isempty(A)
@@ -22,7 +22,7 @@ for frame = 1:options.number_of_frames
         end
         cnt = cnt+1;
         
-    end
+
         
 end
 txt_name = fullfile(options.folder_destination,[ 'Allpositions', '.txt']);    

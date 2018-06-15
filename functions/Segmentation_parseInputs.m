@@ -26,12 +26,13 @@ options.showImage = 0;
 options.filtering = 0;
 options.RegionGrow = 0;
 options.Filter3D = 1;
+options.FilterCNN = 1;
 options.OptBrightCorrection = 0;
 options.NumPixThresh = 2;
 options.red = 1;
 options.green = 2;
 options.blue = 3;
-
+options.number_of_images = 10;
 
 options.Object = 'bacteria'; % can be 'neutrophil'
 options.folder_destination      = [];
@@ -55,6 +56,8 @@ for i = 1:numel(v)
                 options.RegionGrow   = getParam(v,i);     
              case 'filter3d'
                 options.Filter3D   = getParam(v,i);  
+             case 'filter_cnn'
+                options.FilterCNN   = getParam(v,i);  
              case 'brightness_correction'
                 options.OptBrightCorrection   = getParam(v,i);  
              case 'number_pix_lowest'
@@ -62,12 +65,13 @@ for i = 1:numel(v)
             case 'destination'
                 options.folder_destination = getFolder(v,i);   
             case 'red'
-                options.red = getFolder(v,i);  
+                options.red = getParam(v,i); 
             case 'green'
-                options.green = getFolder(v,i);  
+                options.green = getParam(v,i);  
             case 'blue'
-                options.blue = getFolder(v,i);  
-
+                options.blue = getParam(v,i);  
+            case 'number_of_images'
+                options.number_of_images= getParam(v,i);  
             end
     end 
 end
