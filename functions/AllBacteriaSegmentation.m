@@ -118,7 +118,6 @@ myCluster.NumWorkers = 12;  % 'Modified' property now TRUE
 saveProfile(myCluster);    % 'local' profile now updated
                            % 'Modified' property now FALSE
 cnt = 1;
-cnt = 580
 num = options.number_of_images;
 while cnt<=numel(d)
   % load images
@@ -131,7 +130,7 @@ while cnt<=numel(d)
 %     end
 %     name = strcat('section_', counter);
      if cnt+num > numel(d)
-         steps = numel(d)-cnt;
+         steps = numel(d)-cnt+1;
      else
          steps = num;
      end
