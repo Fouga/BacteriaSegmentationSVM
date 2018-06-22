@@ -40,6 +40,7 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 % Natalia Chicherova, 2018
 
 options = Segmentation_parseInputs(varargin);
+    options.training_done = 0;
 if strcmp(options.Object,'neutrophil')==1 && options.NumPixThresh <20
     options.NumPixThresh = 20;
 end
@@ -71,6 +72,12 @@ if isempty(options.folder_destination)
 end
 disp(options);
 
+p = mfilename('fullpath');
+Fdir = fileparts(p);
+if options.FilterCNN ==1 && ~exist(fullfile(Fdir,'ArtifactsFiltering','Data4CNNtrain'))
+    makeTrainingData(options);
+end
+
 if options.OptBrightCorrection == 1
    CorrectionTable = correctOpticalBrightness(sourceD,options.folder_destination);
 end
@@ -82,19 +89,20 @@ greenf = num2str(options.green);
 bluef = num2str(options.blue);
 d = dir([fullfile(sourceD,redf,'*') ext]);
 
-% save all filenames in options
+% get all images names
 imdsr = imageDatastore(fullfile(sourceD,redf), 'FileExtensions', {'.tif'});
 imdsg = imageDatastore(fullfile(sourceD,greenf), 'FileExtensions', {'.tif'});
 imdsb = imageDatastore(fullfile(sourceD,bluef), 'FileExtensions', {'.tif'});
 
+% collect filenames withour extentions
 options.ALLfilenames = cell(numel(d),1);
 for i = 1:numel(d)
     [~,options.ALLfilenames{i}] = fileparts(d(i).name);
 end
 NAMES = options.ALLfilenames;
+
 % get the number of physical and optical section independent of Mosaic.txt
 % from the names of the images
-% make it when no mosaIC!!!!!
 optical_section = []; physical_section = [];
 for z=1:numel(d)
     FileName = options.ALLfilenames{z};
@@ -106,29 +114,30 @@ options.number_of_optic_sec = max(optical_section);
 options.number_of_frames = max(physical_section);
 
 %threshold for region growing in order to convert it to 8bit
-if options.RegionGrow == true 
-    TableOptions = readtable ([model_name '.txt']);
-    options.greenThresh = TableOptions.greenThresh;
-    options.blueThresh = TableOptions.blueThresh;
-    options.redThresh = TableOptions.redThresh;
+if options.RegionGrow == true
+    if ~exist([model_name '.txt'],'file')
+        options.greenThresh = 2000;
+        options.blueThresh = 1000;
+        options.redThresh = 1000;
+    else
+        TableOptions = readtable([model_name '.txt']);
+        options.greenThresh = TableOptions.greenThresh;
+        options.blueThresh = TableOptions.blueThresh;
+        options.redThresh = TableOptions.redThresh;
+    end
     options.IncludeRed = 0;
 end
+
+
+%%%%%%%%%%%%%%%%%%%% LOOP THE SLICES
 myCluster = parcluster('local');
 myCluster.NumWorkers = 12;  % 'Modified' property now TRUE
-saveProfile(myCluster);    % 'local' profile now updated
+%saveProfile(myCluster);    % 'local' profile now updated
                            % 'Modified' property now FALSE
 cnt = 1;
 num = options.number_of_images;
 while cnt<=numel(d)
   % load images
-%     if frame < 10 
-%       counter = strcat('00',int2str(frame)); 
-%     elseif frame < 100 
-%       counter = strcat('0',int2str(frame));   
-%     else
-%       counter = int2str(frame);   
-%     end
-%     name = strcat('section_', counter);
      if cnt+num > numel(d)
          steps = numel(d)-cnt+1;
      else
@@ -146,19 +155,12 @@ while cnt<=numel(d)
     
     parfor i = 1:length(inds)
         display(['Loading ', NAMES{inds(i)}]);
-%         green = imread(fullfile(sourceD, greenf ,[ name, '_0',  int2str(optical), ext]));
-%         GREEN{optical} = green;
-%         red = imread(fullfile(sourceD, redf, [name, '_0',  int2str(optical), ext]));
-%         RED{optical} = red;
-%         blue = imread(fullfile(sourceD, bluef, [name, '_0',  int2str(optical), ext]));
-%         BLUE{optical} = blue;
-%           green = imread(fullfile(sourceD, greenf ,NAMES{i}));
-          green = readimage(imdsg,inds(i));
-          GREEN{i} = green;
-          red = readimage(imdsr,inds(i));
-          RED{i} = red;
-          blue = readimage(imdsb,inds(i));
-          BLUE{i} = blue;
+        green = readimage(imdsg,inds(i));
+        GREEN{i} = green;
+        red = readimage(imdsr,inds(i));
+        RED{i} = red;
+        blue = readimage(imdsb,inds(i));
+        BLUE{i} = blue;
     end
     disp(['Loading took ', int2str(toc), ' sec']);
     

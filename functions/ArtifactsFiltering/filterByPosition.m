@@ -47,8 +47,8 @@ if sum(flag)>0
         end
         name = strcat('section_', counter);
         optical= RemoveA.Optical(i);
-        mask_name = fullfile(options.folder_destination_FilteredperSlice, [name, '_', int2str(optical) ,'.pbm']);
-        txt_name = fullfile(options.folder_destination_FilteredperSlice, ['positions_', name, '_', int2str(optical),  '.txt']);  
+        mask_name = fullfile(options.folder_destination_FilteredperSlice, [name, '_0', int2str(optical) ,'.pbm']);
+        txt_name = fullfile(options.folder_destination_FilteredperSlice, ['positions_', name, '_0', int2str(optical),  '.txt']);  
 
         if flagDel(i)==1
         
