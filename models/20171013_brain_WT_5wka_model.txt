@@ -1,0 +1,2 @@
+redThresh,greenThresh,blueThresh
+1500,1800,1800

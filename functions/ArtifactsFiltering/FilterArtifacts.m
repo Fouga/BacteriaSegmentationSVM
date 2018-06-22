@@ -52,37 +52,10 @@ if options.FilterCNN ==1
 
     % do the training only ones
     if options.training_done ~=1 
-        p = mfilename('fullpath');
-        Fdir = fileparts(p);
-        % if no train data
-        if ~exist(fullfile(Fdir,'Data4CNNtrain'))
-            questTitle='Sort bacteria'; 
-            start(timer('StartDelay',1,'TimerFcn',@(o,e)set(findall(0,'Tag',questTitle),'WindowStyle','normal')));
-            choice = questdlg('There is no data for CNN filtering.\n Do you want to train CNN for filtering?', questTitle, 'Yes','No','Yes');
-            switch choice
-                case 'Yes'
-                    cont = 1;
-                case 'No'
-                    cont = 0;
-            end
-            if cont ==1 
-                mkdir(fullfile(Fdir,'Data4CNNtrain'));
-                % make training data set
-                % the an image with many objects
-                source_dir = '/media/natasha/0C81DABC57F3AF06/Data/Spleen_data/20170223_D5_GFPfil/stitchedImages_100/';
-                segmentation_dir = '/media/natasha/0C81DABC57F3AF06/Data/Spleen_data/20170223_D5_GFPfil/stitchedImages_100/Segmentation_results_bacteria_withoutCNN/';
-                
-                for frame = 10
-                    for optical = 1%:5
-                        show_segmentation_resutlsPatches(source_dir,frame,optical,segmentation_dir,0,1);
-                    end
-                end
-            end
-        end
-        options.CNNdataDir = fullfile(Fdir,'Data4CNNtrain');
 
         % train network if needed
         [net,featureLayer,classifier,options] =trainCNNbacteria(options);
+%         save
     end
     
     for i=1:size(RED,2)

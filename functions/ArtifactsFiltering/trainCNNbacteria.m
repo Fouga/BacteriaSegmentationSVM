@@ -2,7 +2,7 @@ function [net,featureLayer,classifier,options] = trainCNNbacteria(options)
 
 
 rootFolder = options.CNNdataDir;
-categories = {'Bacterium', 'notBacterium'};
+categories = {'Bacterium', 'notBact'};
 
 imds = imageDatastore(fullfile(rootFolder, categories), 'LabelSource', 'foldernames');
 
@@ -16,7 +16,7 @@ imds = splitEachLabel(imds, minSetCount, 'randomize');
 countEachLabel(imds);
 % Find the first instance of an image for each category
 Bacterium = find(imds.Labels == 'Bacterium', 1);
-notBact = find(imds.Labels == 'notBacterium', 1);
+notBact = find(imds.Labels == 'notBact', 1);
 
 % Load pretrained network
 net = resnet50();
@@ -53,6 +53,6 @@ testLabels = testSet.Labels;
 confMat = confusionmat(testLabels, predictedLabels);
 
 % Convert confusion matrix into percentage form
-confMat = bsxfun(@rdivide,confMat,sum(confMat,2));
+confMat = bsxfun(@rdivide,confMat,sum(confMat,2))
 
         options.training_done = 1;
