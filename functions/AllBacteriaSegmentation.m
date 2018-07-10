@@ -136,6 +136,8 @@ myCluster.NumWorkers = 12;  % 'Modified' property now TRUE
                            % 'Modified' property now FALSE
 cnt = 1;
 num = options.number_of_images;
+global IndGlobal 
+IndGlobal = 1;
 while cnt<=numel(d)
   % load images
      if cnt+num > numel(d)
@@ -206,10 +208,10 @@ end
 % save options
 struct2File( options,fullfile(save_dir,'Segmentation_options.txt'));
 putAlltxtTogether(options);
-
+% filter objects that are located too close to each other in 3D coordinates
 if options.Filter3D == true
     txt_name = fullfile(options.folder_destination, ['Allpositions', '.txt']);    
-    A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
+    A = readtable(txt_name);
 
     Afiltered = filterByPosition(A,options);
     txt_name = fullfile(options.folder_destination,['Allpositions_filter3D', '.txt']); 

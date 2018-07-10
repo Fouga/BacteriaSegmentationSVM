@@ -58,7 +58,7 @@ if sum(flag)>0
         
        
         mask = imread(mask_name);
-        PositionTxt = readtable(txt_name);
+        PositionTxt = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
 
         cc = bwconncomp(mask,8);
         % index in RemoveA 

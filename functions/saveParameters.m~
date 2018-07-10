@@ -47,12 +47,9 @@ if cc.NumObjects~=0
     stats_min = regionprops( cc, BLUE, 'MinIntensity');
     MinBlue = [stats_min.MinIntensity]';
     stats_sum = regionprops( cc, BLUE, 'PixelValues');
-    SumBlue = zeros(1, cc.NumObjects);
-    for i=1:cc.NumObjects
-        Pixes = stats_sum(i).PixelValues;
-        SumBlue(i) = sum(Pixes);
-    end
-    Blue_param = [double(MeanGreen), double(SumBlue'), double(MaxBlue), double(MinBlue)];
+    SumBlue = sum([stats_sum.PixelValues]);
+
+    Blue_param = [MeanGreen, SumBlue, MaxBlue, MinBlue];
 
     % red
     stat = regionprops(cc, RED,'MeanIntensity');

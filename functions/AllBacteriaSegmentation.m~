@@ -74,7 +74,6 @@ disp(options);
 
 p = mfilename('fullpath');
 Fdir = fileparts(p);
-options.CNNdataDir = fullfile(Fdir,'ArtifactsFiltering','Data4CNNtrain');
 if options.FilterCNN ==1 && ~exist(fullfile(Fdir,'ArtifactsFiltering','Data4CNNtrain'))
     makeTrainingData(options);
 end
@@ -137,7 +136,8 @@ myCluster.NumWorkers = 12;  % 'Modified' property now TRUE
                            % 'Modified' property now FALSE
 cnt = 1;
 num = options.number_of_images;
-cnt = 330;
+global IndGlobal 
+IndGlobal = 1;
 while cnt<=numel(d)
   % load images
      if cnt+num > numel(d)
@@ -185,7 +185,7 @@ while cnt<=numel(d)
     
     for j=1:length(inds)
         M = MASK{j};
-        if options.showImage==true && (j==1 || mod(j,20)==0 )
+        if options.showImage==true && (j==1 || mod(j,80)==0 )
             showSegmenatedImage(M, RED{j}, GREEN{j}, BLUE{j},options,model_name);
         end
         mask_name = fullfile(options.folder_destination_perSlice,[ NAMES{inds(j)} ,'.pbm']);
@@ -208,10 +208,10 @@ end
 % save options
 struct2File( options,fullfile(save_dir,'Segmentation_options.txt'));
 putAlltxtTogether(options);
-
+% filter objects that are located too close to each other in 3D coordinates
 if options.Filter3D == true
     txt_name = fullfile(options.folder_destination, ['Allpositions', '.txt']);    
-    A = readtable(txt_name,'Format', '%12.0f %12.0f %12.0f %6.0f %6.0f %6.0f %12.3f %15.1f %15.4f %15.1f %15.1f %15.1f %15.1f %15.1f %15.1f');
+    A = readtable(txt_name);
 
     Afiltered = filterByPosition(A,options);
     txt_name = fullfile(options.folder_destination,['Allpositions_filter3D', '.txt']); 
