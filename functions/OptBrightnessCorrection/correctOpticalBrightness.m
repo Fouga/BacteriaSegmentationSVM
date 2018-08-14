@@ -32,6 +32,7 @@ if ~exist(fullfile(save_dir, 'BrightnessCorrection.txt'))
     writetable(CorrectionTable,fullfile(save_dir, 'BrightnessCorrection.txt'));
     options.BrightnessCorrecitonFilename =  fullfile(save_dir, 'BrightnessCorrection.txt');   
 else
+    disp('Brightness correction table already exist.')
     CorrectionTable = readtable(fullfile(save_dir, 'BrightnessCorrection.txt'));
 
 end

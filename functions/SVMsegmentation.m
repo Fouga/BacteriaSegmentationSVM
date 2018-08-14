@@ -1,7 +1,7 @@
-function MASK = SVMsegmentation(RED, GREEN, BLUE, SVMModel, options)
+function MASK = SVMsegmentation(RED, GREEN, BLUE, SVMModel, inds,options)
 
 
-CPRE = ApplySVMModel(RED, GREEN, BLUE, SVMModel, options);
+CPRE = ApplySVMModel(RED, GREEN, BLUE, SVMModel,inds, options);
 
 
 % build a mask
@@ -19,15 +19,23 @@ end
 
 
 
-function  CPRE = ApplySVMModel(RED, GREEN, BLUE, SVMModel, options)
-
+function  CPRE = ApplySVMModel(RED, GREEN, BLUE, SVMModel,inds, options)
+% paramFile=getTiledAcquisitionParamFile;
+% OBJECT=returnSystemSpecificClass;
+% param = readMosaicMetaData(OBJECT,paramFile,1);
 if options.OptBrightCorrection
     % TO DO
     CorrectionTable = readtable(fullfile(options.folder_destination, 'BrightnessCorrection.txt'));
     ratioGreen = CorrectionTable.ratio( CorrectionTable.Channel==options.green);
-    % repmat(options.number_of_opt_sec)
+    ratioGreen = repmat(ratioGreen,options.number_of_optic_sec*options.number_of_frames,1);
+    ratioGreen = ratioGreen(inds);
     ratioRed = CorrectionTable.ratio( CorrectionTable.Channel==options.red);
+    ratioRed = repmat(ratioRed,options.number_of_optic_sec*options.number_of_frames,1);
+    ratioRed = ratioRed(inds);
     ratioBlue = CorrectionTable.ratio( CorrectionTable.Channel==options.blue);
+    ratioBlue = repmat(ratioBlue,options.number_of_optic_sec*options.number_of_frames,1);
+    ratioBlue = ratioBlue(inds);
+    %param.layers
 else
     ratioGreen = ones(size(RED,2),1);
     ratioRed = ones(size(RED,2),1);
@@ -36,9 +44,9 @@ end
 % to do brightness correction
 test = cell(1,size(RED,2));
 parfor i = 1:size(RED,2)
-    gr = GREEN{i};
-    red = RED{i};
-    bl = BLUE{i};
+    gr = GREEN{i}.*ratioGreen(i);
+    red = RED{i}.*ratioRed(i);
+    bl = BLUE{i}.*ratioBlue(i);
     test{i}= [red(:), gr(:), bl(:)];
 end
 

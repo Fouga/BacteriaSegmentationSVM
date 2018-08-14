@@ -168,7 +168,7 @@ while cnt<=numel(d)
     
     % segment using RGB model from SVM
     tic;
-    MASK = SVMsegmentation(RED, GREEN, BLUE, SVMModel, options);
+    MASK = SVMsegmentation(RED, GREEN, BLUE, SVMModel,inds, options);
     disp(['Segmentation took ', int2str(toc), ' sec']);
 
     % filter artifacts: this is specific to 2-photon microscopy

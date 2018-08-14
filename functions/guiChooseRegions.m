@@ -45,7 +45,7 @@ end
 figure, imshow(rgbIm, [])
 
 % choose background
-message = sprintf('Choose 5 SMALL BACKGROUND regions. \n It is important to pick ONLY background pixels!');
+message = sprintf('Choose 6 SMALL BACKGROUND regions. \n It is important to pick ONLY background pixels!');
 uiwait(msgbox(message));
 hFH = imfreehand();
 binaryImage = hFH.createMask();
@@ -67,12 +67,12 @@ pause(2);
 
 %%%%%
 figure, imshow(rgbIm, []);
-message = sprintf('Choose 8 BACTERIA regions.\n It is important to pick ONLY object s pixels!');
+message = sprintf('Choose 11 BACTERIA regions.\n It is important to pick ONLY object s pixels!');
 uiwait(msgbox(message));
 hFH = imfreehand();
 binaryImage = hFH.createMask();
 totalBinary_foregr = false(size(im1_8));
-for k = 1:8
+for k = 1:10
     totalBinary_foregr = totalBinary_foregr | binaryImage;
 %     subplot(1,2,2); imshow(totalBinary_foregr); drawnow
 
