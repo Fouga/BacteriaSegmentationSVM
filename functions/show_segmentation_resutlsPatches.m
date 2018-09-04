@@ -27,12 +27,12 @@ BW = imread(mask_name);
 if sum(BW(:))>0
     [pth filter ext] = fileparts(source_dir);
     ext = '.tif';
-    green = imread([pth '/1/', name, '_0',  int2str(optical), ext]);
-    red = imread([pth '/2/', name, '_0',  int2str(optical), ext]);
+    green = imread([pth '/2/', name, '_0',  int2str(optical), ext]);
+    red = imread([pth '/1/', name, '_0',  int2str(optical), ext]);
     blue = imread([pth '/3/', name, '_0',  int2str(optical), ext]);
 
 
-    rgbIm =  cat(3, green,red,blue);
+    rgbIm =  cat(3, red,green,blue);
     if doMask
        rgbIm = rgbIm.*uint16(BW);
     end
@@ -55,7 +55,11 @@ if sum(BW(:))>0
     rect = round(cat(1,s.BoundingBox));
     PixelList = cat(1,cc.PixelIdxList);
    % for cnn shift =5;% 
-   shift = 200;
+%    shift = 200;
+shift =10;
+thresh_red = 2000;
+thresh_green = 1800;
+thresh_blue = 1800;
     for i =1:size(centroids,1)
         rect2 = rect(i,:);
         im = zeros(size(rgbIm),'uint16');
@@ -87,10 +91,9 @@ if sum(BW(:))>0
             end
             cont = [];
             % Construct a questdlg with three options
-            RGBIM  = cat(3,imadjust(rgbIm(:,:,1),[0 0.03],[]),imadjust(rgbIm(:,:,2),[0 0.015],[]),imadjust(rgbIm(:,:,3),[0 0.015],[]));
+            RGBIM = rgb16bit_to_8bit(red, green, blue,[thresh_red thresh_green thresh_blue]);
             shift2 = 200;
               
-%             overlay =RGBIM;%imoverlay(RGBIM, bw_perim);
             if shift2 > rect2(1) || shift2 > rect2(2) || rect2(1)+shift2>size(RGBIM,2) || rect2(2)+shift2>size(RGBIM,1)
                 shift2 = 0;
                 Im2 = imcrop(RGBIM,[rect2(1)-shift2/2 rect2(2)-shift2/2 rect2(3)+shift2 rect2(4)+shift2]);
@@ -126,8 +129,8 @@ if sum(BW(:))>0
             Im = padarray(Im,[siz(1)-size(Im,1) siz(2)-size(Im,2)],'post');
             IM = padarray(IM,[siz(1)-size(IM,1) siz(2)-size(IM,2)],'post');
 
-            name  = sprintf('Frame_%i_optical_%i_Bacterium_%i.tif',frame,optical,i);
-            imwrite(Im,fullfile(save_dir_bact, name));
+%             name  = sprintf('Frame_%i_optical_%i_Bacterium_%i.tif',frame,optical,i);
+%             imwrite(Im,fullfile(save_dir_bact, name));
             name2  = sprintf('Frame_%i_optical_%i_Bacterium_%i_patch.tif',frame,optical,i);
             imwrite(IM,fullfile(save_dir_bact, name2));
             name3  = sprintf('Frame_%i_optical_%i_Bacterium_%i_noRed.tif',frame,optical,i);

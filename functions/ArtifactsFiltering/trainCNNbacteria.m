@@ -1,5 +1,6 @@
 function [net,featureLayer,classifier,options] = trainCNNbacteria(options)
 
+disp('Training convolutional network...');
 
 rootFolder = options.CNNdataDir;
 categories = {'Bacterium', 'notBact'};
@@ -55,4 +56,4 @@ confMat = confusionmat(testLabels, predictedLabels);
 % Convert confusion matrix into percentage form
 confMat = bsxfun(@rdivide,confMat,sum(confMat,2))
 
-        options.training_done = 1;
+options.training_done = 1;

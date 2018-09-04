@@ -51,19 +51,18 @@ end
 if options.FilterCNN ==1
 
     % do the training only ones
-    if options.training_done ~=1 
-
-        % train network if needed
-        [net,featureLayer,classifier,options] =trainCNNbacteria(options);
-%         save
-    end
+%     if options.training_done ~=1 
+% 
+%         % load pre-trained network 
+% %         save
+%     end
     
     for i=1:size(RED,2)
         M = MASK{i};
         red = RED{i};
         green = GREEN{i};
         blue = BLUE{i};
-        M = discardNonBacteriaCNN(red, green, blue,M,net,featureLayer,classifier,options);
+        M = discardNonBacteriaCNN(red, green, blue,M,options);
         MASK{i} = M;
     end
 end

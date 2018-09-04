@@ -73,9 +73,24 @@ end
 disp(options);
 
 p = mfilename('fullpath');
+% create a training dataset in the segmenation dir or copy from the
+% programming dir
 Fdir = fileparts(p);
-if options.FilterCNN ==1 && ~exist(fullfile(Fdir,'ArtifactsFiltering','Data4CNNtrain'))
-    makeTrainingData(options);
+options.CNN_training = 0;
+if options.FilterCNN ==1 
+    if options.CNN_training == true && ~exist(fullfile(options.folder_destination,'Data4CNNtrain'))
+        % do the training data set
+        makeTrainingData(options);
+    else % copy from the programming folder
+%         copyfile(fullfile(Fdir,'ArtifactsFiltering','Data4CNNtrain'),...
+%         fullfile(options.folder_destination,'Data4CNNtrain'))
+    end
+    options.CNNdataDir = fullfile(options.folder_destination,'Data4CNNtrain');
+    % train the network
+    [net,featureLayer,classifier,options] =trainCNNbacteria(options);
+    options.net = net;
+    options.featureLayer = featureLayer;
+    options.classifier = classifier;
 end
 
 if options.OptBrightCorrection == 1
