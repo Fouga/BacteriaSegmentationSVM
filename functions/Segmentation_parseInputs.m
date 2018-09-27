@@ -32,7 +32,9 @@ options.NumPixThresh = 2;
 options.red = 1;
 options.green = 2;
 options.blue = 3;
-options.number_of_images = 10;
+options.number_of_images = 5;
+options.one_image_segmenation = [];
+
 
 options.Object = 'bacteria'; % can be 'neutrophil'
 options.folder_destination      = [];
@@ -72,6 +74,8 @@ for i = 1:numel(v)
                 options.blue = getParam(v,i);  
             case 'number_of_images'
                 options.number_of_images= getParam(v,i);  
+            case 'one_image_segmenation'
+                options.one_image_segmenation= getParam(v,i); 
             end
     end 
 end

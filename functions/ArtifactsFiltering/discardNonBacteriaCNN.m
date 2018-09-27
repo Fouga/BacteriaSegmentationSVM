@@ -64,7 +64,7 @@ for i =1:cc.NumObjects
     if label==categories{2} 
         if options.Debag == 1
             [x,y] = find(impl(:,:,1)>0);
-            RGBIM = rgb16bit_to_8bit(rgbImcrop(:,:,1), rgbImcrop(:,:,2), rgbImcrop(:,:,3),[2500 1600 1200]);
+            RGBIM = rgb16bit_to_8bit(rgbImcrop(:,:,1), rgbImcrop(:,:,2), rgbImcrop(:,:,3),[2000 1800 1800]);
 
             figure, imshow(RGBIM,[]), hold on 
                plot(y(1:end),x(1:end), 'y*'); hold off

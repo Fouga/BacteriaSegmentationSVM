@@ -1,11 +1,11 @@
 function showSegmenatedImage(M, red, green, blue,varargin)
 
-if nargin == 5
+if nargin == 4
     
     thresh_red = 2000;
     thresh_green = 1600;
     thresh_blue = 800;
-elseif nargin == 6
+elseif nargin == 5
     % read txt from model
     options = varargin{1};
   
@@ -23,18 +23,6 @@ elseif nargin == 6
 end
 
 
-% l = red;
-% l(l>thresh1)=thresh1;
-% im1_8 = uint8(double(l)./double(max(l(:)))*2^8);
-% m=green;
-% m(m>thresh2)=thresh2;
-% im2_8 = uint8(double(m)./double(max(m(:)))*2^8);
-% n = blue;
-% n(n>thresh3)=thresh3;
-% im3_8 = uint8(double(n)./double(max(n(:)))*2^8);
-% 
-% rgbIm = cat(3, im1_8,im2_8,im3_8);
-
 rgbIm = rgb16bit_to_8bit(red, green, blue,[thresh_red thresh_green thresh_blue]);
 
 cc = bwconncomp(M,8);
@@ -51,10 +39,12 @@ else
     disp('no objects found')
 end
 %%
+if nargin == 5
 if strcmp(options.Object,'neutrophil') 
     bw4_perim = bwperim(M);
     overlay = imoverlay(rgbIm, bw4_perim);
     figure, imshow(overlay), title('Overlay with object borders.')
     pause(3)
+end
 end
 

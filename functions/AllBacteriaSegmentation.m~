@@ -222,7 +222,7 @@ while cnt<=numel(d)
     for j=1:length(inds)
         M = MASK{j};
         if options.showImage==true && (cnt==1 || mod(cnt,80)==0 )
-            showSegmenatedImage(M, RED{j}, GREEN{j}, BLUE{j},options);
+            showSegmenatedImage(M, RED{j}, GREEN{j}, BLUE{j},options,model_name);
         end
         mask_name = fullfile(options.folder_destination_perSlice,[ NAMES{inds(j)} ,'.pbm']);
         save_image(M, mask_name);
