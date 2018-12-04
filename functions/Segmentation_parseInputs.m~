@@ -37,10 +37,10 @@ options.green = 2;
 options.blue = 3;
 options.number_of_images = 5;
 options.one_image_segmenation = [];
-% read from Mosaic*.txt
+%
 options.xres = param.xres;
 options.yres = param.yres;
-options.zres = param.zres*2;
+options.zres = param.yres*2;
 
 options.Object = 'bacteria'; % can be 'neutrophil'
 options.folder_destination      = [];

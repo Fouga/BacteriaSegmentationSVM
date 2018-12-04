@@ -2,7 +2,7 @@ function A = filterByPosition(A,options)
 % filter if x,y,z position of a neighbor is less than a threshold distance
 % x,y distance threshold is 5 micron and z - 11 micron
 xy_res = options.xres;
-Zmicron = A.Frame*50 + A.Optical*10;% in micron
+z = A.Frame*50 + A.Optical*10;% in micron
 flag = zeros(1, size(A,1));
 x = A.X;
 y = A.Y;
@@ -12,7 +12,7 @@ for p = 1:size(A,1)
     for q = 1:size(A,1)
         if p ~= q && flag(q) ~= 1 && flag(p) ~= 1
             xy_distance = sqrt((x(p)-x(q))^2 + (y(p)-y(q))^2);      
-            z_dist = abs(Zmicron(p)-Zmicron(q));
+            z_dist = abs(z(p)-z(q));
             if xy_distance < 5*xy_res && z_dist < 11
                 if cherry( p) > cherry( q)
                  flag(q) = 1;
@@ -27,7 +27,7 @@ for p = 1:size(A,1)
 end
 % rewrite new intensities obtained with neighbor filtering
 A.GreenMeanInten = cherry;
-A = addvars(A,Zmicron,'Before','area');
+A.Zmicron = z;
 RemoveA = A(logical(flag),:); 
 A(logical(flag),:) = [];                
 

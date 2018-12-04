@@ -1,7 +1,7 @@
 function         buildBacteriaTrainingSet(sourceD,frame,optical,segmentation_dir,trainingSave_dir, varargin)
 
 
-if nargin > 3
+if nargin > 5
     thresh = varargin{1};
     thresh_red = thresh(1);
     thresh_green = thresh(2);

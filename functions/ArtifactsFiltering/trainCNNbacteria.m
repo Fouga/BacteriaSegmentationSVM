@@ -3,7 +3,7 @@ function [net,featureLayer,classifier,options] = trainCNNbacteria(options)
 disp('Training convolutional network...');
 
 rootFolder = options.CNNdataDir;
-categories = {'Bacterium', 'notBact'};
+categories = {options.Labels{1}, options.Labels{2}};
 
 imds = imageDatastore(fullfile(rootFolder, categories), 'LabelSource', 'foldernames');
 
@@ -14,15 +14,15 @@ minSetCount = min(tbl{:,2}); % determine the smallest amount of images in a cate
 imds = splitEachLabel(imds, minSetCount, 'randomize');
 
 % Notice that each set now has exactly the same number of images.
-countEachLabel(imds);
+countEachLabel(imds)
 % Find the first instance of an image for each category
-Bacterium = find(imds.Labels == 'Bacterium', 1);
-notBact = find(imds.Labels == 'notBact', 1);
+Bacterium = find(imds.Labels == options.Labels{1}, 1);
+notBact = find(imds.Labels == options.Labels{2}, 1);
 
 % Load pretrained network
 net = resnet50();
 
-[trainingSet, testSet] = splitEachLabel(imds, 0.3, 'randomize');
+[trainingSet, testSet] = splitEachLabel(imds, 0.7, 'randomize');
 options.imageSizeCNN = [224 224];
 augmentedTrainingSet = augmentedImageDatastore(options.imageSizeCNN, trainingSet);
 augmentedTestSet = augmentedImageDatastore(options.imageSizeCNN, testSet);
@@ -55,5 +55,7 @@ confMat = confusionmat(testLabels, predictedLabels);
 
 % Convert confusion matrix into percentage form
 confMat = bsxfun(@rdivide,confMat,sum(confMat,2))
+
+
 
 options.training_done = 1;
