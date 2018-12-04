@@ -13,7 +13,7 @@ for p = 1:size(A,1)
         if p ~= q && flag(q) ~= 1 && flag(p) ~= 1
             xy_distance = sqrt((x(p)-x(q))^2 + (y(p)-y(q))^2);      
             z_dist = abs(Zmicron(p)-Zmicron(q));
-            if xy_distance < 5*xy_res && z_dist < 11
+            if xy_distance < 5/xy_res && z_dist < 11
                 if cherry( p) > cherry( q)
                  flag(q) = 1;
                  cherry(p) = cherry(p) + cherry(q);
