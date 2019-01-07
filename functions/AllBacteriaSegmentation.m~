@@ -107,7 +107,7 @@ if options.FilterCNN ==1
 end
 
 % correct optical layers brightness decrease
-options.BrightnessCorr_method = 'trimmean';%'median';
+options.BrightnessCorr_method = 'mean';
 if options.OptBrightCorrection == 1
    correctOpticalBrightness(sourceD,options);
 end
