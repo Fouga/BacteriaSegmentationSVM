@@ -36,9 +36,6 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 
 % See also: InitializeYourModel, SVMsegmentation
 %
-%     Segmentation program for bacteria using color clustering with SVM
-%     Copyright (C) 2018 Natalia Chicherova, University of Basel,
-%     Switzerland
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -50,6 +47,8 @@ function AllBacteriaSegmentation(sourceD,model_name,varargin)
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
 % 
+% Author: Chicherova Natalia, 2019
+%         University of Basel  
 
 % load parameters for the algorithm
 options = Segmentation_parseInputs(varargin);
